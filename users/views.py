@@ -38,7 +38,7 @@ def login_view(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response({'error': 'Se esperaba una solicitud POST'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 @api_view(['POST'])
 def create_user(request):
@@ -78,7 +78,7 @@ def create_user(request):
     return JsonResponse({'message': 'Usuario creado correctamente'}, status=201)
 
     return JsonResponse({'error': 'Se esperaba una solicitud POST'}, status=400)
-
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def read_user(request, user_id):
     if request.method == 'GET':
@@ -93,7 +93,8 @@ def read_user(request, user_id):
             return JsonResponse(data)
         except Users.DoesNotExist:
             return JsonResponse({'error': 'El usuario especificado no existe'}, status=404)
-
+        
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def update_user(request, user_id):
     if request.method == 'PUT':
@@ -119,7 +120,7 @@ def update_user(request, user_id):
             return JsonResponse({'message': 'Usuario actualizado correctamente'})
         except Users.DoesNotExist:
             return JsonResponse({'error': 'El usuario especificado no existe'}, status=404)
-
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def delete_user(request, user_id):
     if request.method == 'DELETE':
