@@ -9,8 +9,8 @@ from rest_framework.decorators import permission_classes
 from rest_framework.pagination import LimitOffsetPagination
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 100
-    max_limit = 1000  # Establece el límite máximo si lo deseas
+    default_limit = 35
+    max_limit = 35  # Establece el límite máximo si lo deseas
 
 @permission_classes([IsAuthenticated])
 class ComponentsListCreateView(generics.ListCreateAPIView):
