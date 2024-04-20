@@ -12,6 +12,8 @@ class Components(models.Model):
     url = models.URLField(max_length=200)
     referencia = models.CharField(max_length=100)
     nombre = models.CharField(max_length=100)
+    image_url = models.CharField(max_length=250)
+    datasheet_url = models.CharField(max_length=250)
     
   
 
