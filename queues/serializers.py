@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Components
-from queues.models import Queues
+from .models import Queues
 
 
 class QueuesSerializer(serializers.ModelSerializer):

@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import Components
-from .serializers import ComponentsSerializer
+from .models import Queues
+from .serializers import QueuesSerializer
 
 
 from rest_framework.permissions import IsAuthenticated
