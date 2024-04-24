@@ -7,10 +7,10 @@ from rest_framework.decorators import permission_classes
 class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Providers
-        fields = '__all__'  # Incluye todos los campos del modelo Provider
+        fields = '__all__'  
 
 class ComponentsSerializer(serializers.ModelSerializer):
-    proveedor = ProviderSerializer()  # Utiliza el serializador del proveedor para serializar la información del proveedor
+    proveedor = ProviderSerializer()  
 
     class Meta:
         model = Components
