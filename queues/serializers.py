@@ -7,7 +7,6 @@ from components.models import Components
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-       
         exclude = ['password']  # Excluir el campo de contraseña
 
 
