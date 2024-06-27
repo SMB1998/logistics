@@ -18,9 +18,9 @@ class ComponentsSerializer(serializers.ModelSerializer):
 
 # Serializador para el modelo Requests
 class RequestsSerializer(serializers.ModelSerializer):
-    admin = UsersSerializer(many=True)  # Incluir el serializador de Users para el campo admin
-    users = UsersSerializer(many=True)  # Incluir el serializador de Users para el campo users
-    components = ComponentsSerializer(many=True)  # Incluir el serializador de Components para el campo components
+    # admin = UsersSerializer(many=True)  # Incluir el serializador de Users para el campo admin
+    # users = UsersSerializer(many=True)  # Incluir el serializador de Users para el campo users
+    # components = ComponentsSerializer(many=True)  # Incluir el serializador de Components para el campo components
 
     class Meta:
         model = Requests

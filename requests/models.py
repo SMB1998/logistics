@@ -3,6 +3,15 @@ import uuid
 from users.models import Users
 from components.models import Components
 
+class Status(models.TextChoices):
+    """
+    Defines the possible status options for a request.
+    """
+    RECIBIDO = 'RECIBIDO', 'Recibido'  # Received
+    ALISTANDO = 'ALISTANDO', 'Alistando'  # Preparing
+    ENVIADO = 'ENVIADO', 'Enviado'  # Sent
+    ENTREGADO = 'ENTREGADO', 'Entregado'
+
 class Requests(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # users = models.ManyToManyField(Users, related_name='requests_users', blank=True)     
@@ -10,7 +19,11 @@ class Requests(models.Model):
     referencia = models.CharField(max_length=100, blank=True)
     nombre = models.CharField(max_length=100)
     # admin = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='admin_requests', blank=True) 
-  
+    status = models.CharField(
+            max_length=20,
+            choices=Status.choices,
+            default=Status.RECIBIDO,  # Set default status to "recibido"
+        )
 
     def __str__(self):
         return self.nombre
