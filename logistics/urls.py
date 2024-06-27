@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/', include('providers.urls')), 
     path('api/', include('users.urls')),
     path('api/', include('queues.urls')),
+    path('api/', include('requests.urls')),
 
 ]
 
