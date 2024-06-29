@@ -1,1 +1,1 @@
-web: logistics.wsgi:application
+web: gunicorn logistics.wsgi:application --log-file -
