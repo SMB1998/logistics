@@ -13,7 +13,7 @@ class Status(models.TextChoices):
     ENTREGADO = 'ENTREGADO', 'Entregado'
 
 class Requests(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, unique=True, editable=False)
     # users = models.ManyToManyField(Users, related_name='requests_users', blank=True)     
     # components = models.ManyToManyField(Components, related_name='requests_components', blank=True)     
     referencia = models.CharField(max_length=100, blank=True)
@@ -27,3 +27,6 @@ class Requests(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def get_custom_id(self):
+        return f'KNOT{self.id}'
