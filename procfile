@@ -1,0 +1,1 @@
+web: logistics.wsgi:application
