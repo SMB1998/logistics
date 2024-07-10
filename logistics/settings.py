@@ -64,6 +64,12 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH': False,
 }
 
+ELASTICSEARCH_DSL = {
+        'default': {
+            'hosts': 'http://elasticsearch:9200' # 'http://localhost:9200' #local 
+        },
+}
+
 
 
 INSTALLED_APPS = [
@@ -74,6 +80,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 
 
     'components',
