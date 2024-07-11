@@ -19,7 +19,7 @@ services:
     #   - ELASTICSEARCH_HOST=elasticsearch
     #   - ELASTICSEARCH_PORT=9200
 
-    command: bash -c "python /app/manage.py migrate && python manage.py runserver 0.0.0.0:8000 && python /app/manage.py search_index --rebuild"
+    command: bash -c "python /app/manage.py migrate &&  python manage.py runserver 0.0.0.0:8000 "
 
   elasticsearch:
     container_name: elasticsearch
