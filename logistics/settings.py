@@ -66,7 +66,7 @@ SIMPLE_JWT = {
 
 ELASTICSEARCH_DSL = {
         'default': {
-            'hosts': 'http://127.0.0.1:9200' # 'http://localhost:9200' #local 
+            'hosts': 'http://0.0.0.0:9200' # 'http://localhost:9200' #local 
         },
 }
 
