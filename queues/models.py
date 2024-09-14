@@ -10,7 +10,7 @@ class Queues(models.Model):
     referencia = models.CharField(max_length=100, blank=True)
     nombre = models.CharField(max_length=100)
     admin = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='admin_queues', blank=True) 
-  
+    autoacept = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre

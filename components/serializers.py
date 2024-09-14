@@ -10,7 +10,6 @@ class ProviderSerializer(serializers.ModelSerializer):
         fields = '__all__'  
 
 class ComponentsSerializer(serializers.ModelSerializer):
-    proveedor = ProviderSerializer()  
 
     class Meta:
         model = Components
@@ -30,6 +29,7 @@ class ComponentDocumentSerializer(serializers.Serializer):
     image_url = serializers.CharField()
     datasheet_url = serializers.CharField()
     search_index_provider = serializers.CharField()
+    proveedor = serializers.CharField()
     
 
     class Meta:

@@ -1,10 +1,11 @@
-from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 
 from .models import Components 
 
 @registry.register_document
 class ComponentDocument(Document):
+    proveedor = fields.TextField(attr='proveedor_identification')
 
     class Index:
         name = "components"

@@ -84,10 +84,12 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl_drf',
 
 
+
     'components',
     'users', 
     'providers',
     'queues',
+    'queue_requests',
     'requests',
     
     'rest_framework.authtoken',
@@ -149,6 +151,14 @@ DATABASES = {
         'PORT': '28745',
     }
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'santiagomunoz318@gmail.com'
+EMAIL_HOST_PASSWORD = 'xzjo lwlm ejkr jwli'
 
 
 # Password validation

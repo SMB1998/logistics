@@ -16,11 +16,14 @@ class Role(models.Model):
 class Users(AbstractUser):
     ADMIN = 'admin'
     CLIENTE = 'cliente'
+    SELLER = 'seller'
     ROLE_CHOICES = [
         (ADMIN, 'Administrador'),
         (CLIENTE, 'Cliente'),
+        (SELLER, 'seller'),
     ]
-
+    displayName = models.CharField(max_length=100, blank=True, null=True, default=None)
+    photo = models.CharField(max_length=100, blank=True, null=True, default=None)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=CLIENTE)
     
 
@@ -30,12 +33,9 @@ class Users(AbstractUser):
     
 
     
-#quitar este reciver para hacer el createsuperuser    
+#quitar este reciver para hacer el createsuperuser    , sirve para hashear la pasword
 # @receiver(pre_save, sender=Users)
 # def hash_user_password(sender, instance, **kwargs):
 #         if instance._state.adding:  # Verifica si se está creando un nuevo objeto
 #             instance.password = make_password(instance.password)
-#         else:  # Verifica si la contraseña ha cambiado
-#             original_user = sender.objects.get(pk=instance.pk)
-#             if original_user.password != instance.password:
-#                 instance.password = make_password(instance.password)
+        
