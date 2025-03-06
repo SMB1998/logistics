@@ -13,9 +13,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import django.conf
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 import os
 import django_heroku
 import dj_database_url
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
