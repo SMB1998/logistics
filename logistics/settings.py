@@ -25,14 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gzqizlxyk&%6szyt-=qpc9t&pm@w+4i*p0bvrdeoygvjmnzh@-'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = [
-    '*'
-]
+DEBUG = os.getenv('DEBUG') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 
 # Application definition
@@ -66,7 +63,7 @@ SIMPLE_JWT = {
 
 ELASTICSEARCH_DSL = {
         'default': {
-            'hosts': 'http://elasticsearch:9200' # 'http://localhost:9200' #local 
+            'hosts': os.getenv('ELASTICSEARCH_HOST', 'http://elasticsearch:9200') # 'http://localhost:9200' #local 
         },
 }
 
@@ -143,22 +140,22 @@ WSGI_APPLICATION = 'logistics.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db',
-        'USER': 'avnadmin',
-        'PASSWORD': 'AVNS_kb2phR3iv2qKjSqN5QJ',
-        'HOST': 'mysql-48c0510-santiagomunoz318-a346.g.aivencloud.com',
-        'PORT': '28745',
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', ''),
     }
 }
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'santiagomunoz318@gmail.com'
-EMAIL_HOST_PASSWORD = 'xzjo lwlm ejkr jwli'
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 # Password validation

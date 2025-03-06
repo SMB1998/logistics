@@ -31,28 +31,30 @@ from .models import Components
 
 class ComponentSearchView(generics.ListAPIView):
     serializer_class = ComponentDocumentSerializer
-    
+    pagination_class = CustomLimitOffsetPagination
+
     def get_queryset(self):
         bool_query = Bool()
 
-        # Obtener el parámetro de búsqueda de la solicitud
-        q = self.request.query_params.get('q', None)
-        proveedor_id = self.request.query_params.get('provider_id', None)
+        q = self.request.query_params.get("q", None)
+        proveedor_id = self.request.query_params.get("provider_id", None)
 
-        # Si se proporciona un término de búsqueda, añadirlo a la consulta
+        print(f"🔍 Buscando: {q}, Proveedor: {proveedor_id}", flush=True)
+
+        # Manejo de búsqueda de texto
         if q:
-            query = MultiMatch(query=q, fields=["*"], fuzziness="AUTO")
+            query = MultiMatch(query=q, fields=["nombre", "referencia", "search_index_provider"], fuzziness="AUTO")
             bool_query.must.append(query)
 
-        # Si se proporciona un ID de proveedor, filtrar por el proveedor usando Term
+        # Filtro de proveedor si es válido
         if proveedor_id:
-            proveedor_query = Term(proveedor=proveedor_id)
+            proveedor_query = Term(proveedor={"value": proveedor_id})
             bool_query.filter.append(proveedor_query)
 
-        # Construir la consulta final
+        # Si hay filtros, aplicar la consulta; si no, traer todo con match_all
         if bool_query.must or bool_query.filter:
             queryset = ComponentDocument.search().query(bool_query)[0:1000]
         else:
-            queryset = ComponentDocument.search().query('match_all')[0:1000]
+            queryset = ComponentDocument.search().query("match_all")[0:1000]
 
         return queryset
