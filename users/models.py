@@ -34,8 +34,8 @@ class Users(AbstractUser):
 
     
 #quitar este reciver para hacer el createsuperuser    , sirve para hashear la pasword
-# @receiver(pre_save, sender=Users)
-# def hash_user_password(sender, instance, **kwargs):
-#         if instance._state.adding:  # Verifica si se está creando un nuevo objeto
-#             instance.password = make_password(instance.password)
+@receiver(pre_save, sender=Users)
+def hash_user_password(sender, instance, **kwargs):
+        if instance._state.adding:  # Verifica si se está creando un nuevo objeto
+            instance.password = make_password(instance.password)
         
