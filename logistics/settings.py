@@ -75,26 +75,17 @@ ELASTICSEARCH_DSL = {
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'corsheaders',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_elasticsearch_dsl',
-    'django_elasticsearch_dsl_drf',
-
-
-
-    'components',
-    'users', 
-    'providers',
-    'queues',
-    'queue_requests',
-    'requests',
-    
-    'rest_framework.authtoken',
     'rest_framework',
-    'rest_framework_simplejwt',
+    'corsheaders',
+    'users',
+    'components',
+    'providers',
+    'discussion_board',
+    'discussion_board_requests',
 ]
 
 AUTH_USER_MODEL = 'users.Users'

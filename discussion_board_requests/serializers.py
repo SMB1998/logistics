@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import QueueReuqest
+from .models import DiscussionBoardRequest
 from users.models import Users
 from components.models import Components
 
@@ -11,8 +11,8 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 # Serializador para el modelo Queues
-class QueueReuqestSerializer(serializers.ModelSerializer):
+class DiscussionBoardRequestSerializer(serializers.ModelSerializer):
     users = UsersSerializer(many=True)  # Incluir el serializador de Users para el campo users
     class Meta:
-        model = QueueReuqest
+        model = DiscussionBoardRequest
         fields = '__all__'

@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import QueueReuqest
-from .serializers import QueueReuqestSerializer
+from .models import DiscussionBoardRequest
+from .serializers import DiscussionBoardRequestSerializer
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -13,12 +13,12 @@ class CustomLimitOffsetPagination(LimitOffsetPagination):
     max_limit = 35  # Establece el límite máximo si lo deseas
 
 @permission_classes([IsAuthenticated])
-class QueuesListCreateView(generics.ListCreateAPIView):
-    queryset = QueueReuqest.objects.all()
-    serializer_class = QueueReuqestSerializer
+class DiscussionBoardRequestListCreateView(generics.ListCreateAPIView):
+    queryset = DiscussionBoardRequest.objects.all()
+    serializer_class = DiscussionBoardRequestSerializer
     pagination_class = CustomLimitOffsetPagination  # Agrega paginación
 
 @permission_classes([IsAuthenticated])
-class QueuesRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = QueueReuqest.objects.all()
-    serializer_class = QueueReuqestSerializer
+class DiscussionBoardRequestRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DiscussionBoardRequest.objects.all()
+    serializer_class = DiscussionBoardRequestSerializer

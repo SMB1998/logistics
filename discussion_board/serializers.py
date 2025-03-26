@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import Queues
+from .models import DiscussionBoard, Message
 from users.models import Users
 from components.models import Components
+from users.serializers import UsersSerializer
 
 # Serializador para el modelo Users
 class UsersSerializer(serializers.ModelSerializer):
@@ -16,6 +17,19 @@ class ComponentsSerializer(serializers.ModelSerializer):
         model = Components
         fields = '__all__'
 
+# Serializador para el modelo DiscussionBoard
+class DiscussionBoardSerializer(serializers.ModelSerializer):
+    users = UsersSerializer(many=True, read_only=True)
+    messages = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DiscussionBoard
+        fields = '__all__'
+
+    def get_messages(self, obj):
+        messages = obj.messages.all()
+        return MessageSerializer(messages, many=True).data
+
 # Serializador para el modelo Queues
 class QueuesSerializer(serializers.ModelSerializer):
     admin = UsersSerializer()  # Incluir el serializador de Users para el campo admin
@@ -24,7 +38,7 @@ class QueuesSerializer(serializers.ModelSerializer):
     is_admin = serializers.SerializerMethodField()  # Campo personalizado is_admin
 
     class Meta:
-        model = Queues
+        model = DiscussionBoard
         fields = '__all__'
 
     def get_is_admin(self, obj):
@@ -38,3 +52,16 @@ class QueuesSerializer(serializers.ModelSerializer):
             _request = request 
             return obj.admin.id == request.user.id
         return False
+
+class MessageSerializer(serializers.ModelSerializer):
+    author = UsersSerializer(read_only=True)
+    replies = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Message
+        fields = ['id', 'discussion_board', 'author', 'content', 'parent', 'created_at', 'updated_at', 'is_edited', 'replies']
+        read_only_fields = ['created_at', 'updated_at', 'is_edited']
+
+    def get_replies(self, obj):
+        replies = obj.replies.all()
+        return MessageSerializer(replies, many=True).data

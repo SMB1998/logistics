@@ -24,10 +24,8 @@ urlpatterns = [
     path('api/', include('components.urls')),
     path('api/', include('providers.urls')), 
     path('api/', include('users.urls')),
-    path('api/', include('queues.urls')),
-    path('api/', include('queue_requests.urls')),
-    path('api/', include('requests.urls')),
-
+    path('api/', include('discussion_board.urls')),
+    path('api/', include('discussion_board_requests.urls')),
 ]
 
 

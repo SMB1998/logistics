@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 
-class QueuesConfig(AppConfig):
+class DiscussionBoardRequestsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'queue_requests'
+    name = 'discussion_board_requests'
