@@ -70,6 +70,8 @@ class MessageSerializer(serializers.ModelSerializer):
 class DiscussionBoardDocumentSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     referencia = serializers.CharField()
+    description = serializers.CharField()
+    created_at = serializers.DateTimeField()
     nombre = serializers.CharField()
     autoacept = serializers.BooleanField()
     status = serializers.CharField()

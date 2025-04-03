@@ -64,20 +64,20 @@ services:
     networks:
       - elasticnet
 
-  frontend:
-    build:
-      context: ../gadgetgalaxy
-    image: gadgetgalaxy:latest
-    container_name: gadgetgalaxy_frontend
-    volumes:
-      - ../gadgetgalaxy:/app
-    ports:
-      - 3000:3000
-    networks:
-      - elasticnet
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000
-    command: ["npm", "run", "dev"]
+  # frontend:
+  #   build:
+  #     context: ../gadgetgalaxy
+  #   image: gadgetgalaxy:latest
+  #   container_name: gadgetgalaxy_frontend
+  #   volumes:
+  #     - ../gadgetgalaxy:/app
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - elasticnet
+  #   environment:
+  #     - REACT_APP_API_URL=http://localhost:8000
+  #   command: ["npm", "run", "dev"]
 
 volumes:
   esdata01:
