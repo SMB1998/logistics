@@ -1,37 +1,32 @@
 from rest_framework import generics
 from .models import Components
 from .serializers import ComponentsSerializer, ComponentDocumentSerializer
-from elasticsearch_dsl.query import MultiMatch, Bool , Term
-
+from elasticsearch_dsl.query import MultiMatch, Bool, Term
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-
 from rest_framework.pagination import LimitOffsetPagination
+from .documents import ComponentsDocument
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 35
-    max_limit = 35  # Establece el límite máximo si lo deseas
+    max_limit = 35
 
 @permission_classes([IsAuthenticated])
 class ComponentsListCreateView(generics.ListCreateAPIView):
     queryset = Components.objects.all()
     serializer_class = ComponentsSerializer
-    pagination_class = CustomLimitOffsetPagination  # Agrega paginación
+    pagination_class = CustomLimitOffsetPagination
 
 @permission_classes([IsAuthenticated])
 class ComponentsRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Components.objects.all()
     serializer_class = ComponentsSerializer
-    
 
 
-from .documents import ComponentDocument
-
-from .models import Components
 
 class ComponentSearchView(generics.ListAPIView):
     serializer_class = ComponentDocumentSerializer
-    pagination_class = CustomLimitOffsetPagination
+    pagination_class = CustomLimitOffsetPagination  # Usar la paginación personalizada
 
     def get_queryset(self):
         bool_query = Bool()
@@ -53,8 +48,10 @@ class ComponentSearchView(generics.ListAPIView):
 
         # Si hay filtros, aplicar la consulta; si no, traer todo con match_all
         if bool_query.must or bool_query.filter:
-            queryset = ComponentDocument.search().query(bool_query)[0:1000]
+            # Aquí se aplica la paginación
+            queryset = ComponentsDocument.search().query(bool_query)
         else:
-            queryset = ComponentDocument.search().query("match_all")[0:1000]
+            queryset = ComponentsDocument.search().query("match_all")
 
-        return queryset
+        # Aplicar la paginación a los resultados
+        return self.paginate_queryset(queryset)

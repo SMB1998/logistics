@@ -1,11 +1,11 @@
-
+version: "3.8"
 
 services:
   django:
     build:
       context: .
     image: django:latest
-    container_name: django_app
+    container_name: logistics_django
     volumes:
       - .:/app
     ports:
@@ -14,15 +14,18 @@ services:
       - elasticnet
     depends_on:
       - elasticsearch
+      - redis
     # entrypoint: ["./wait-for-it.sh"]
-    # environment:
-    #   - ELASTICSEARCH_HOST=elasticsearch
-    #   - ELASTICSEARCH_PORT=9200
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - DJANGO_SETTINGS_MODULE=logistics.settings
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
 
     command: bash -c "python /app/manage.py makemigrations  &&  python /app/manage.py migrate &&  python manage.py runserver 0.0.0.0:8000 "
 
   elasticsearch:
-    container_name: elasticsearch
+    container_name: logistics_elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
     volumes:
       - esdata01:/usr/share/elasticsearch/data
@@ -35,8 +38,53 @@ services:
     networks:
       - elasticnet
 
+  redis:
+    container_name: logistics_redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - elasticnet
+    volumes:
+      - redis_data:/data
+
+  celery:
+    build: .
+    container_name: logistics_celery
+    command: celery -A logistics worker -l info
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=logistics.settings
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - django
+      - elasticsearch
+      - redis
+    networks:
+      - elasticnet
+
+  frontend:
+    build:
+      context: ../gadgetgalaxy
+    image: gadgetgalaxy:latest
+    container_name: gadgetgalaxy_frontend
+    volumes:
+      - ../gadgetgalaxy:/app
+    ports:
+      - 3000:3000
+    networks:
+      - elasticnet
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    command: ["npm", "run", "dev"]
+
 volumes:
   esdata01:
+  postgres_data:
+  elasticsearch_data:
+  redis_data:
 
 networks:
   elasticnet:
+    driver: bridge

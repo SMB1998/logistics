@@ -37,6 +37,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # Application definition
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 35,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
@@ -64,13 +66,25 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH': False,
 }
 
+# Elasticsearch configuration
 ELASTICSEARCH_DSL = {
-        'default': {
-            'hosts': os.getenv('ELASTICSEARCH_HOST', 'http://elasticsearch:9200') # 'http://localhost:9200' #local 
-        },
+    'default': {
+        'hosts': 'http://elasticsearch:9200',
+        'timeout': 30,
+        'retry_on_timeout': True,
+        'max_retries': 2
+    },
 }
 
-
+# Elasticsearch DRF configuration
+ELASTICSEARCH_DSL_DRF = {
+    'default': {
+        'hosts': 'http://elasticsearch:9200',
+        'timeout': 30,
+        'retry_on_timeout': True,
+        'max_retries': 2
+    },
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -81,6 +95,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     'users',
     'components',
     'providers',
@@ -190,6 +206,15 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
 
 django_heroku.settings(locals())

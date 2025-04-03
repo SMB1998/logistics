@@ -5,7 +5,8 @@ from .views import (
     UserDiscussionBoardsView,
     MessageListCreateView,
     MessageDetailView,
-    MessageReplyView
+    MessageReplyView,
+    DiscussionBoardSearchView
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
     path('discussion-boards/<str:discussion_board_id>/messages/', MessageListCreateView.as_view(), name='messages-list-create'),
     path('discussion-boards/<str:discussion_board_id>/messages/<str:id>/', MessageDetailView.as_view(), name='message-detail'),
     path('discussion-boards/<str:discussion_board_id>/messages/<str:parent_id>/replies/', MessageReplyView.as_view(), name='message-replies'),
+    path('discussion-board/search/', DiscussionBoardSearchView.as_view(), name='discussion-board-search'),
 ]

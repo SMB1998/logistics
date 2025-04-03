@@ -3,6 +3,7 @@ from .models import DiscussionBoard, Message
 from users.models import Users
 from components.models import Components
 from users.serializers import UsersSerializer
+from .documents import DiscussionBoardDocument
 
 # Serializador para el modelo Users
 class UsersSerializer(serializers.ModelSerializer):
@@ -65,3 +66,15 @@ class MessageSerializer(serializers.ModelSerializer):
     def get_replies(self, obj):
         replies = obj.replies.all()
         return MessageSerializer(replies, many=True).data
+
+class DiscussionBoardDocumentSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    referencia = serializers.CharField()
+    nombre = serializers.CharField()
+    autoacept = serializers.BooleanField()
+    status = serializers.CharField()
+    # Agrega otros campos si es necesario
+
+    class Meta:
+        model = DiscussionBoardDocument
+        fields = '__all__'

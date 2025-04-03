@@ -2,8 +2,12 @@ from django.contrib import admin
 from .models import DiscussionBoard, Message
 # Register your models here.
 
-
-admin.site.register(DiscussionBoard)
+@admin.register(DiscussionBoard)
+class DiscussionBoardAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'referencia', 'admin', 'status', 'autoacept')
+    list_filter = ('status', 'autoacept')
+    search_fields = ('nombre', 'referencia', 'admin__username')
+    ordering = ('-status',)
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):

@@ -5,8 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django.db.models import Q
 from .models import DiscussionBoard, Message
-from .serializers import DiscussionBoardSerializer, MessageSerializer
+from .serializers import DiscussionBoardSerializer, MessageSerializer, DiscussionBoardDocumentSerializer
+from elasticsearch_dsl.query import MultiMatch, Bool
 
+from .documents import DiscussionBoardDocument
 from rest_framework.pagination import LimitOffsetPagination
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
@@ -86,3 +88,23 @@ class MessageReplyView(generics.CreateAPIView):
             parent=parent_message,
             author=self.request.user
         )
+
+class DiscussionBoardSearchView(generics.ListAPIView):
+    serializer_class = DiscussionBoardDocumentSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        bool_query = Bool()
+
+        q = self.request.query_params.get("q", None)
+
+        if q:
+            query = MultiMatch(query=q, fields=["nombre", "referencia", "status"], fuzziness="AUTO")
+            bool_query.must.append(query)
+
+        if bool_query.must:
+            queryset = DiscussionBoardDocument.search().query(bool_query)
+        else:
+            queryset = DiscussionBoardDocument.search().query("match_all")
+
+        return self.paginate_queryset(queryset)

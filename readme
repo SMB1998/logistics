@@ -1,0 +1,3 @@
+python manage.py sync_elasticsearch
+python manage.py sync_elasticsearch_disc_board
+docker-compose up --build
