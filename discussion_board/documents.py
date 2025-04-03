@@ -32,6 +32,8 @@ class DiscussionBoardDocument(Document):
         fields = [
             'id',
             'referencia',
+            'description',
+            'created_at',
             'nombre',
             'autoacept',
             'status',

@@ -15,15 +15,32 @@ class CustomLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 35
     max_limit = 35  # Establece el límite máximo si lo deseas
 
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
 class DiscussionBoardListCreateView(generics.ListCreateAPIView):
     queryset = DiscussionBoard.objects.all()
     serializer_class = DiscussionBoardSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            # Permitir acceso sin autenticación para listar
+            return [AllowAny()]
+        elif self.request.method == 'POST':
+            # Requerir autenticación para crear
+            return [IsAuthenticated()]
+        return super().get_permissions()
 
 class DiscussionBoardRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DiscussionBoard.objects.all()
     serializer_class = DiscussionBoardSerializer
-    permission_classes = [IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            # Permitir acceso sin autenticación para listar
+            return [AllowAny()]
+        else:
+            # Requerir autenticación para crear
+            return [IsAuthenticated()]
+
     
 class UserDiscussionBoardsView(APIView):
     permission_classes = [IsAuthenticated]
