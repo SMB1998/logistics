@@ -7,6 +7,8 @@ from django.db.models import Q
 from .models import DiscussionBoard, Message
 from .serializers import DiscussionBoardSerializer, MessageSerializer, DiscussionBoardDocumentSerializer
 from elasticsearch_dsl.query import MultiMatch, Bool
+from django.shortcuts import get_object_or_404
+from users.models import Users
 
 from .documents import DiscussionBoardDocument
 from rest_framework.pagination import LimitOffsetPagination
@@ -43,13 +45,12 @@ class DiscussionBoardRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPI
 
     
 class UserDiscussionBoardsView(APIView):
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        user = request.user
-        print(user, flush=True)
+    def get(self, request, user_id):
+        # Obtener el usuario por ID
+        user = get_object_or_404(Users, id=user_id)
         
-        # Obtener las colas asociadas al usuario autenticado
+        # Obtener las colas asociadas al usuario especificado
         discussion_boards = DiscussionBoard.objects.filter(Q(users=user) | Q(admin=user)).distinct()
         serializer = DiscussionBoardSerializer(discussion_boards, many=True, context={'request': request})
         return Response(serializer.data)
