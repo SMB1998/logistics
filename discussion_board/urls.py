@@ -12,7 +12,7 @@ from .views import (
 urlpatterns = [
     path('discussion-boards/', DiscussionBoardListCreateView.as_view(), name='discussion-boards-list-create'),
     path('discussion-boards/<str:pk>/', DiscussionBoardRetrieveUpdateDestroyView.as_view(), name='discussion-boards-detail'),
-    path('my-discussion-boards/', UserDiscussionBoardsView.as_view(), name='user-discussion-boards'),
+    path('user-discussion-boards/<str:user_id>/', UserDiscussionBoardsView.as_view(), name='user-discussion-boards'),
     
     # Endpoints para mensajes
     path('discussion-boards/<str:discussion_board_id>/messages/', MessageListCreateView.as_view(), name='messages-list-create'),
