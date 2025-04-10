@@ -16,6 +16,7 @@ class ComponentsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ComponentDocumentSerializer(serializers.Serializer):
+    id = serializers.CharField()
     nombre = serializers.CharField()
     referencia = serializers.CharField()
     search_index_provider = serializers.CharField()
