@@ -22,6 +22,7 @@ class Users(AbstractUser):
         (CLIENTE, 'Cliente'),
         (SELLER, 'seller'),
     ]
+    email = models.EmailField(unique=True, blank=False, null=False)  # Email obligatorio y único
     displayName = models.CharField(max_length=100, blank=True, null=True, default=None)
     photo = models.CharField(max_length=100, blank=True, null=True, default=None)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=CLIENTE)
