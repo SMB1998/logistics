@@ -22,6 +22,7 @@ class ComponentsSerializer(serializers.ModelSerializer):
 class DiscussionBoardSerializer(serializers.ModelSerializer):
     users = UsersSerializer(many=True, read_only=True)
     messages = serializers.SerializerMethodField()
+    components = ComponentsSerializer(many=True, read_only=True)
 
     class Meta:
         model = DiscussionBoard
