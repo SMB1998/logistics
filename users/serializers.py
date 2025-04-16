@@ -9,18 +9,22 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
 
+        user = Users.objects.get(email='santiagomunoz318@gmail.com')
+
+        print(password, flush=True)
+
         # Verificar si el usuario existe y las credenciales son válidas
-        user = authenticate(username=username, password=password)
+        user = authenticate(email=email, password=password)
 
         if not user:
-            raise serializers.ValidationError('Credenciales inválidas')
+            raise serializers.ValidationError('Credenciales inválidasaa')
 
         if not user.is_active:
             raise serializers.ValidationError('La cuenta de usuario está desactivada')

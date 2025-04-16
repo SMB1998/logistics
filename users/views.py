@@ -1,4 +1,3 @@
-
 # En tu_app/views.py
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
@@ -30,17 +29,18 @@ def login_view(request):
     if request.method == 'POST':
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            username = serializer.validated_data['username']
+            email = serializer.validated_data['email']
             password = serializer.validated_data['password']
            
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(request, email=email, password=password)
          
             if user is not None:
                 login(request, user)
                 refresh = RefreshToken.for_user(user)
                 return Response({'message': 'Inicio de sesión exitoso', 'access_token': str(refresh.access_token),'user': {
                         'id': user.id,
-                        'username': user.username,
+                        'email':user.email,
+                        'username':user.username,
                         'role':user.role
                         # Aquí puedes incluir más campos del usuario si lo deseas
                     }}, status=status.HTTP_200_OK)
@@ -53,22 +53,20 @@ def login_view(request):
 @csrf_exempt
 @api_view(['POST'])
 def create_user(request):
-
     # Obtén los datos del formulario
-    username = request.data.get('username')
+    email = request.data.get('email')
     password = request.data.get('password')
     display_name = request.data.get('displayName')
     role_id = request.data.get('role_id')
     
-    # Verifica si se proporcionó un nombre de usuario
-    if not username:
-        return JsonResponse({'error': 'El nombre de usuario es requerido'}, status=400)
+    # Verifica si se proporcionó un email
+    if not email:
+        return JsonResponse({'error': 'El email es requerido'}, status=400)
 
-    # Verifica si el nombre de usuario ya existe
-    if Users.objects.filter(username=username).exists():
-        return JsonResponse({'error': 'El nombre de usuario ya está en uso'}, status=400)
+    # Verifica si el email ya existe
+    if Users.objects.filter(email=email).exists():
+        return JsonResponse({'error': 'El email ya está en uso'}, status=400)
 
-    
     # Si no se proporciona un nombre de rol, utiliza el rol de cliente por defecto
     if not role_id:
         default_role_name = 'cliente'
@@ -83,14 +81,12 @@ def create_user(request):
             role = Role.objects.get(name='cliente')
         except Role.DoesNotExist:
             return JsonResponse({'error': 'El rol especificado no existe'}, status=400)
-    
-        
 
     # Encripta la contraseña antes de guardarla
     hashed_password = make_password(password)
 
     # Crea un nuevo usuario con la contraseña encriptada
-    user = Users.objects.create(username=username, password=password, displayName = display_name, role=role)
+    user = Users.objects.create(email=email, password=hashed_password, displayName=display_name, role=role)
 
     return JsonResponse({'message': 'Usuario creado correctamente'}, status=201)
 

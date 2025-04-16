@@ -106,6 +106,12 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'users.Users'
 
+# logistics/settings.py
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailBackend',  # Asegúrate de que este sea el primer backend
+    'django.contrib.auth.backends.ModelBackend',  # Mantén el backend por defecto
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

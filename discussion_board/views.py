@@ -9,6 +9,7 @@ from .serializers import DiscussionBoardSerializer, MessageSerializer, Discussio
 from elasticsearch_dsl.query import MultiMatch, Bool
 from django.shortcuts import get_object_or_404
 from users.models import Users
+from rest_framework.permissions import BasePermission
 
 from .documents import DiscussionBoardDocument
 from rest_framework.pagination import LimitOffsetPagination
@@ -55,9 +56,15 @@ class UserDiscussionBoardsView(APIView):
         serializer = DiscussionBoardSerializer(discussion_boards, many=True, context={'request': request})
         return Response(serializer.data)
 
+class IsAuthenticatedForCreate(BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'POST':
+            return request.user.is_authenticated
+        return True  # Permitir acceso a GET sin autenticación
+
 class MessageListCreateView(generics.ListCreateAPIView):
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedForCreate]  # Usar la clase de permisos personalizada
 
     def get_queryset(self):
         discussion_board_id = self.kwargs.get('discussion_board_id')
