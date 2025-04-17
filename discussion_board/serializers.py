@@ -20,13 +20,31 @@ class ComponentsSerializer(serializers.ModelSerializer):
 
 # Serializador para el modelo DiscussionBoard
 class DiscussionBoardSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many=True, queryset=Users.objects.all(), required=False)
+    users = UsersSerializer(many=True, read_only=True)
+    users_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Users.objects.all(),
+        source='users',
+        write_only=True,
+        required=False
+    )
     messages = serializers.SerializerMethodField()
-    components = serializers.PrimaryKeyRelatedField(many=True, queryset=Components.objects.all(), required=False)
+    components = ComponentsSerializer(many=True, read_only=True)
+    components_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Components.objects.all(),
+        source='components',
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = DiscussionBoard
         fields = '__all__'
+        extra_kwargs = {
+            'users': {'read_only': True},
+            'components': {'read_only': True}
+        }
     
     def get_messages(self, obj):
         messages = obj.messages.all()
