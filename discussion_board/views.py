@@ -24,6 +24,9 @@ class DiscussionBoardListCreateView(generics.ListCreateAPIView):
     queryset = DiscussionBoard.objects.all()
     serializer_class = DiscussionBoardSerializer
 
+    def perform_create(self, serializer):
+        serializer.save()
+
     def get_permissions(self):
         if self.request.method == 'GET':
             # Permitir acceso sin autenticación para listar
