@@ -55,9 +55,18 @@ def login_view(request):
 def create_user(request):
     # Obtén los datos del formulario
     email = request.data.get('email')
+    username = request.data.get('username')
     password = request.data.get('password')
     display_name = request.data.get('displayName')
     role_id = request.data.get('role_id')
+
+     # Verifica si se proporcionó un nombre de usuario
+    if not username:
+        return JsonResponse({'error': 'El nombre de usuario es requerido'}, status=400)
+
+    # Verifica si el nombre de usuario ya existe
+    if Users.objects.filter(username=username).exists():
+        return JsonResponse({'error': 'El nombre de usuario ya está en uso'}, status=400)
     
     # Verifica si se proporcionó un email
     if not email:
@@ -86,11 +95,10 @@ def create_user(request):
     hashed_password = make_password(password)
 
     # Crea un nuevo usuario con la contraseña encriptada
-    user = Users.objects.create(email=email, password=hashed_password, displayName=display_name, role=role)
+    user = Users.objects.create(email=email, password=hashed_password, displayName=display_name, role=role, username=username)
 
     return JsonResponse({'message': 'Usuario creado correctamente'}, status=201)
 
-    return JsonResponse({'error': 'Se esperaba una solicitud POST'}, status=400)
 @permission_classes([IsAuthenticated])
 @csrf_exempt
 
