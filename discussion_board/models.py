@@ -16,7 +16,7 @@ class DiscussionBoard(models.Model):
     referencia = models.CharField(max_length=1000, blank=True)
     description = models.CharField(max_length=1000, blank=True)
     nombre = models.CharField(max_length=100)
-    admin = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='admin_discussion_boards', blank=True) 
+    admin = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='admin_discussion_boards', blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
     autoacept = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='created')
