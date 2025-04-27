@@ -12,6 +12,7 @@ class DiscussionBoardDocument(Document):
     components = fields.ObjectField(properties={
         'id': fields.IntegerField(),
         'nombre': fields.TextField(),
+        'referencia': fields.TextField(),
         # Agrega otros campos del componente si es necesario
     })
     admin = fields.ObjectField(properties={

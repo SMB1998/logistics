@@ -127,7 +127,12 @@ class DiscussionBoardSearchView(generics.ListAPIView):
         q = self.request.query_params.get("q", None)
 
         if q:
-            query = MultiMatch(query=q, fields=["nombre", "referencia", "status"], fuzziness="AUTO")
+            # Buscar en los campos del DiscussionBoard y en los nombres de los componentes asociados
+            query = MultiMatch(
+                query=q,
+                fields=["nombre", "referencia", "status", "components.nombre", "components.referencia"],  # Incluye components.referencia
+                fuzziness="AUTO"
+            )
             bool_query.must.append(query)
 
         if bool_query.must:
