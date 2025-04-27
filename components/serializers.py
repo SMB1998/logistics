@@ -25,8 +25,10 @@ class ComponentDocumentSerializer(serializers.Serializer):
     image_url = serializers.CharField()
     datasheet_url = serializers.CharField()
     proveedor = serializers.CharField()
+    price_breaks = serializers.CharField()
+    stock_number = serializers.IntegerField()
+
 
     class Meta:
         model = Components
         fields = '__all__'
-   
