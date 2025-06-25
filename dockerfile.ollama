@@ -1,0 +1,16 @@
+# Usar una imagen base más ligera
+FROM debian:bullseye-slim
+
+# Instalar dependencias necesarias
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+# Exponer el puerto para Ollama
+EXPOSE 11434
+
+# Comando para iniciar Ollama
+CMD ["ollama", "serve"]

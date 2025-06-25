@@ -102,6 +102,7 @@ INSTALLED_APPS = [
     'providers',
     'discussion_board',
     'discussion_board_requests',
+    'channels',  
 ]
 
 AUTH_USER_MODEL = 'users.Users'
@@ -142,6 +143,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'logistics.wsgi.application'
+ASGI_APPLICATION = 'logistics.asgi.application'  # Agregado para soporte WebSockets
 
 
 # Database
@@ -221,6 +223,15 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 
 django_heroku.settings(locals())
