@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/', include('users.urls')),
     path('api/', include('discussion_board.urls')),
     path('api/', include('discussion_board_requests.urls')),
+    path('api/', include('ia.urls')),
+
 ]
 
 

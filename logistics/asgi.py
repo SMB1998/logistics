@@ -11,7 +11,7 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-import discussion_board.routing
+import ia.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'logistics.settings')
 
@@ -19,7 +19,7 @@ application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            discussion_board.routing.websocket_urlpatterns
+            ia.routing.websocket_urlpatterns
         )
     ),
 })

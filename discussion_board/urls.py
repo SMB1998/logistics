@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
     DiscussionBoardListCreateView,
     DiscussionBoardRetrieveUpdateDestroyView,
@@ -9,7 +9,6 @@ from .views import (
     DiscussionBoardSearchView
 )
 from .discussionboardcomponent_views import DiscussionBoardComponentListView, DiscussionBoardComponentCreateUpdateView, DiscussionBoardComponentUpdateView, DiscussionBoardComponentRetrieveView
-from .ia_local_views import LocalIAInteractView, IAResultView
 
 urlpatterns = [
     path('discussion-boards/', DiscussionBoardListCreateView.as_view(), name='discussion-boards-list-create'),
@@ -28,7 +27,5 @@ urlpatterns = [
     path('discussion-board-components/<int:id>/', DiscussionBoardComponentRetrieveView.as_view(), name='discussion-board-component-detail'),
     path('discussion-board-components/<int:id>/update/', DiscussionBoardComponentUpdateView.as_view(), name='discussion-board-component-update'),
 
-    # Endpoint de IA local
-    path('ia-local/', LocalIAInteractView.as_view(), name='ia-local'),
-    path('ia-local-result/<str:task_id>/', IAResultView.as_view(), name='ia-local-result'),
+   
 ]

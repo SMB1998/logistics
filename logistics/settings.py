@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     'discussion_board',
     'discussion_board_requests',
     'channels',  
+    'ia',
 ]
 
 AUTH_USER_MODEL = 'users.Users'

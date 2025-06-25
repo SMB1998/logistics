@@ -1,6 +1,2 @@
 from django.urls import re_path
-from . import consumers
-
-websocket_urlpatterns = [
-    re_path(r'ws/ia/$', consumers.IAConsumer.as_asgi()),
-]
+# Eliminado: consumers.py y routing.py, ahora los websockets de IA se gestionan en ia/
