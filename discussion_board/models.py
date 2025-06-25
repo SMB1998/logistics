@@ -3,6 +3,17 @@ import uuid
 from users.models import Users
 from components.models import Components
 
+class DiscussionBoardComponent(models.Model):
+    discussion_board = models.ForeignKey('DiscussionBoard', on_delete=models.CASCADE)
+    component = models.ForeignKey('components.Components', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('discussion_board', 'component')
+
+    def __str__(self):
+        return f"{self.discussion_board} - {self.component} (Cantidad: {self.quantity})"
+
 class DiscussionBoard(models.Model):
     STATUS_CHOICES = [
         ('created', 'Creado'),
@@ -12,7 +23,7 @@ class DiscussionBoard(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     users = models.ManyToManyField(Users, related_name='discussion_boards_users', blank=True)     
-    components = models.ManyToManyField(Components, related_name='discussion_boards_components', blank=True)     
+    components = models.ManyToManyField(Components, through='DiscussionBoardComponent', related_name='discussion_boards_components', blank=True)     
     referencia = models.CharField(max_length=1000, blank=True)
     description = models.CharField(max_length=1000, blank=True)
     nombre = models.CharField(max_length=100)

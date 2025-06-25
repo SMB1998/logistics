@@ -8,6 +8,7 @@ from .views import (
     MessageReplyView,
     DiscussionBoardSearchView
 )
+from .discussionboardcomponent_views import DiscussionBoardComponentListView, DiscussionBoardComponentCreateUpdateView, DiscussionBoardComponentUpdateView, DiscussionBoardComponentRetrieveView
 
 urlpatterns = [
     path('discussion-boards/', DiscussionBoardListCreateView.as_view(), name='discussion-boards-list-create'),
@@ -19,4 +20,10 @@ urlpatterns = [
     path('discussion-boards/<str:discussion_board_id>/messages/<str:id>/', MessageDetailView.as_view(), name='message-detail'),
     path('discussion-boards/<str:discussion_board_id>/messages/<str:parent_id>/replies/', MessageReplyView.as_view(), name='message-replies'),
     path('discussion-board/search/', DiscussionBoardSearchView.as_view(), name='discussion-board-search'),
+
+    # Endpoints para DiscussionBoardComponent
+    path('discussion-board-components/', DiscussionBoardComponentListView.as_view(), name='discussion-board-component-list'),
+    path('discussion-board-components/create/', DiscussionBoardComponentCreateUpdateView.as_view(), name='discussion-board-component-create'),
+    path('discussion-board-components/<int:id>/', DiscussionBoardComponentRetrieveView.as_view(), name='discussion-board-component-detail'),
+    path('discussion-board-components/<int:id>/update/', DiscussionBoardComponentUpdateView.as_view(), name='discussion-board-component-update'),
 ]
