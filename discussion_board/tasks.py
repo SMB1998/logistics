@@ -1,46 +1,75 @@
 from celery import shared_task
 from django.core.management import call_command
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import PromptTemplate
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import LLMChain
 from langchain_community.llms import Ollama
 
-def build_context():
+llm = Ollama(model="llama2", base_url="http://llama:11434")
+user_memories = {}
+
+def get_user_memory(user_id):
+    # Convierte user_id a string para asegurar que sea hashable
+    user_id = str(user_id) if user_id is not None else "anonimo"
+    if user_id not in user_memories:
+        user_memories[user_id] = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True
+        )
+    return user_memories[user_id]
+
+def build_context_text():
     from components.models import Components
-    from discussion_board.models import DiscussionBoard, DiscussionBoardComponent
-    components = list(Components.objects.all().values())
-    boards = list(DiscussionBoard.objects.all().values())
-    board_components = list(DiscussionBoardComponent.objects.all().values())
-    return {
-        'components': components,
-        'boards': boards,
-        'board_components': board_components
-    }
+    from discussion_board.models import DiscussionBoard
+    components = Components.objects.all().values(
+        'nombre', 'referencia', 'stock_number', 'price_breaks', 'precio', 'proveedor__nombre', 'url', 'datasheet_url', 'image_url'
+    )
+    boards = DiscussionBoard.objects.all().values(
+        'nombre', 'description', 'referencia', 'created_at', 'status', 'admin__username'
+    )
+    comp_text = "\n".join([
+        f"- {c['nombre']} (ref: {c['referencia']}, stock: {c['stock_number']}, precio: {c['precio']}, proveedor: {c['proveedor__nombre']})"
+        for c in components
+    ])
+    board_text = "\n".join([
+        f"- {b['nombre']} (desc: {b['description']}, admin: {b['admin__username']}, estado: {b['status']})"
+        for b in boards
+    ])
+    return f"Componentes disponibles:\n{comp_text}\n\nTableros de discusión:\n{board_text}"
+
+template = (
+    "Eres un asesor experto en electrónica de una tienda.\n"
+    "{contexto_usuario}\n"
+    "Historial de la conversación:\n{chat_history}\n"
+    "Respuesta:"
+)
+prompt = PromptTemplate(
+    input_variables=["contexto_usuario", "chat_history"],
+    template=template
+)
 
 @shared_task
-def ask_ollama_task(prompt, history=None):
-    context = build_context()
-    # Construye el historial en el prompt si existe
-    history_text = ""
-    if history:
-        for turn in history:
-            if turn["role"] == "user":
-                history_text += f"Usuario: {turn['content']}\n"
-            elif turn["role"] == "assistant":
-                history_text += f"Asistente: {turn['content']}\n"
-    template = (
-        "Eres un asistente experto en electrónica. "
-        "Siempre debes fundamentar tus respuestas usando la información de los tableros de discusión o los componentes que aparecen en el contexto. "
-        "Si la pregunta no se puede responder usando esa información, indícalo explícitamente. "
-        "En cada respuesta, cita o referencia los tableros de discusión o componentes relevantes del contexto. "
-        "No menciones ni uses información de usuarios. "
-        "Historial de la conversación hasta ahora:\n{history}\n"
-        "Contexto:\n{context}\n"
-        "Pregunta del usuario: {user_question}"
-    )
-    prompt_template = ChatPromptTemplate.from_template(template)
-    formatted_prompt = prompt_template.format(context=context, user_question=prompt, history=history_text)
-    llm = Ollama(model="llama2", base_url="http://llama:11434")
-    response = llm.invoke(formatted_prompt, max_tokens=128)
-    return response
+def ask_ollama_task(prompt_text, user_id=None, history=None):
+    try:
+        catalogo = build_context_text()
+        memory = get_user_memory(user_id or "anonimo")
+        contexto_usuario = (
+            f"{catalogo}\n\n"
+            f"Pregunta del usuario: {prompt_text}"
+        )
+        chain = LLMChain(
+            llm=llm,
+            prompt=prompt,
+            memory=memory
+        )
+        response = chain.predict(
+            contexto_usuario=contexto_usuario
+        )
+        # Siempre retorna string
+        return str(response)
+    except Exception as e:
+        # Devuelve un mensaje de error serializable
+        return f"Error interno: {str(e)}"
 
 @shared_task
 def sync_discussion_board_elasticsearch():
