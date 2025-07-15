@@ -26,6 +26,9 @@ urlpatterns = [
     path('api/', include('users.urls')),
     path('api/', include('discussion_board.urls')),
     path('api/', include('discussion_board_requests.urls')),
+
+    # Endpoint para utilidades generales
+    path('api/utilities/', include('general_utilities.urls')),
     path('api/', include('ia.urls')),
 
 ]
