@@ -36,7 +36,8 @@ class DiscussionBoardComponent(models.Model):
 class DiscussionBoard(models.Model):
     def save(self, *args, **kwargs):
         status_before = None
-        if self.pk:
+        # Solo buscar el objeto viejo si ya existe en la base de datos
+        if self.pk and DiscussionBoard.objects.filter(pk=self.pk).exists():
             old = DiscussionBoard.objects.get(pk=self.pk)
             status_before = old.status
         super().save(*args, **kwargs)
