@@ -15,7 +15,7 @@ services:
     depends_on:
       - elasticsearch
       - redis
-      - llama
+      # - llama
     # entrypoint: ["./wait-for-it.sh"]
     environment:
       - ELASTICSEARCH_HOST=elasticsearch
@@ -62,26 +62,26 @@ services:
       - django
       - elasticsearch
       - redis
-      - llama
+      # - llama
     networks:
       - elasticnet
 
-  llama:
-    build:
-      context: .
-      dockerfile: dockerfile.ollama
-    container_name: llama2
-    networks:
-      - elasticnet
-    ports:
-      - "11434:11434"
-    environment:
-      - OLLAMA_HOST=0.0.0.0
-    command: >
-      sh -c "ollama serve &
-             sleep 5 &&
-             if ollama list | grep -q 'llama2'; then echo 'Modelo llama2 ya disponible'; else echo 'Descargando modelo llama2...' && ollama pull llama2; fi &&
-             tail -f /dev/null"
+  # llama:
+  #   build:
+  #     context: .
+  #     dockerfile: dockerfile.ollama
+  #   container_name: llama2
+  #   networks:
+  #     - elasticnet
+  #   ports:
+  #     - "11434:11434"
+  #   environment:
+  #     - OLLAMA_HOST=0.0.0.0
+  #   command: >
+  #     sh -c "ollama serve &
+  #            sleep 5 &&
+  #            if ollama list | grep -q 'llama2'; then echo 'Modelo llama2 ya disponible'; else echo 'Descargando modelo llama2...' && ollama pull llama2; fi &&
+  #            tail -f /dev/null"
 
   # local-llm:
   #   image: ghcr.io/huggingface/text-generation-inference:1.4

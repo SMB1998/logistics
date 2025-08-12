@@ -23,6 +23,7 @@ class DiscussionBoardRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     discussion_board = models.ForeignKey(DiscussionBoard, on_delete=models.CASCADE, related_name='discussion_board_requests')
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='discussion_board_requests')
+    message = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=[
         ('pending', 'Pendiente'),
         ('approved', 'Aprobado'),
