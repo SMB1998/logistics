@@ -10,6 +10,7 @@ from .views import (
 )
 from .discussionboardcomponent_views import DiscussionBoardComponentListView, DiscussionBoardComponentCreateUpdateView, DiscussionBoardComponentUpdateView, DiscussionBoardComponentRetrieveView
 from .consolidated_views import DiscussionBoardConsolidatedView
+from .consolidated_views import DiscussionBoardConsolidatedView, DiscussionBoardUsersConsolidatedView
 
 urlpatterns = [
     path('discussion-boards/', DiscussionBoardListCreateView.as_view(), name='discussion-boards-list-create'),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('discussion-board-components/<int:id>/update/', DiscussionBoardComponentUpdateView.as_view(), name='discussion-board-component-update'),
 
     path('discussion-boards/<str:discussion_board_id>/consolidated/', DiscussionBoardConsolidatedView.as_view(), name='discussion-board-consolidated'),
+        path('discussion-boards/<str:discussion_board_id>/users-consolidated/', DiscussionBoardUsersConsolidatedView.as_view(), name='discussion-board-users-consolidated'),
 
    
 ]

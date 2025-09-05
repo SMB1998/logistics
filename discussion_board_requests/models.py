@@ -8,14 +8,14 @@ from discussion_board.models import DiscussionBoard
 from django.db.models.signals import pre_save
 
 class DiscussionBoardRequest(models.Model):
-    class Meta:
-        unique_together = ('discussion_board', 'user')
+    # class Meta:
+    #     unique_together = ('discussion_board', 'user')
 
-    def clean(self):
-        # Evitar que un usuario tenga más de un request para el mismo board
-        if DiscussionBoardRequest.objects.filter(discussion_board=self.discussion_board, user=self.user).exclude(pk=self.pk).exists():
-            from django.core.exceptions import ValidationError
-            raise ValidationError('Solo puedes tener una solicitud activa por board.')
+    # def clean(self):
+    #     # Evitar que un usuario tenga más de un request para el mismo board
+    #     if DiscussionBoardRequest.objects.filter(discussion_board=self.discussion_board, user=self.user).exclude(pk=self.pk).exists():
+    #         from django.core.exceptions import ValidationError
+    #         raise ValidationError('Solo puedes tener una solicitud activa por board.')
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -62,18 +62,18 @@ def process_components_on_status_change(sender, instance, created, **kwargs):
         # Solo crear el mensaje si no existe ya uno para este request
         if not Message.objects.filter(request=instance).exists():
             componentes = getattr(instance, 'components', []).all()
-            if componentes:
-                detalles = '\n'.join([
-                    f"- {c.component.nombre if hasattr(c.component, 'nombre') else str(c.component)} (referencia: {c.component.referencia if hasattr(c.component, 'referencia') else '-'}) : {c.quantity}" for c in componentes
-                ])
-                content = f"{instance.user.username} se unió al board y adjuntó los siguientes componentes:\n{detalles}"
-            else:
-                content = f"{instance.user.username} se unió al board."
+            from discussion_board.serializers import ComponentsSerializer
+            components_data = [
+                dict(ComponentsSerializer(c.component).data, quantity=c.quantity)
+                for c in componentes
+            ]
+            content = instance.message if hasattr(instance, 'message') else f"{instance.user.username} se unió al board."
             Message.objects.create(
                 discussion_board=instance.discussion_board,
                 author=instance.user,
                 content=content,
-                request=instance
+                request=instance,
+                components=components_data
             )
         print(f"[DEBUG] Antes de agregar: usuarios en board: {[u.id for u in instance.discussion_board.users.all()]}", flush=True)
         if instance.user not in instance.discussion_board.users.all():

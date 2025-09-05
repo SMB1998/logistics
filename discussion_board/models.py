@@ -12,13 +12,13 @@ class DiscussionBoardComponent(models.Model):
             msg = Message.objects.filter(request=self.request).first()
             if msg:
                 componentes = self.request.components.all()
-                if componentes:
-                    detalles = '\n'.join([
-                        f"- {c.component.nombre if hasattr(c.component, 'nombre') else str(c.component)} (referencia: {c.component.referencia if hasattr(c.component, 'referencia') else '-'}) : {c.quantity}" for c in componentes
-                    ])
-                    msg.content = f"{self.request.user.username} se unió al board y adjuntó los siguientes componentes:\n{detalles}"
-                else:
-                    msg.content = f"{self.request.user.username} se unió al board."
+                from discussion_board.serializers import ComponentsSerializer
+                components_data = [
+                    dict(ComponentsSerializer(c.component).data, quantity=c.quantity)
+                    for c in componentes
+                ]
+                msg.content = self.request.message if hasattr(self.request, 'message') else f"{self.request.user.username} se unió al board."
+                msg.components = components_data
                 msg.save()
     discussion_board = models.ForeignKey('DiscussionBoard', on_delete=models.CASCADE, null=True, blank=True)
     component = models.ForeignKey('components.Components', on_delete=models.CASCADE)
@@ -27,8 +27,8 @@ class DiscussionBoardComponent(models.Model):
     created_by = models.ForeignKey('users.Users', on_delete=models.CASCADE, null=True, blank=True)
     request = models.ForeignKey('discussion_board_requests.DiscussionBoardRequest', on_delete=models.SET_NULL, null=True, blank=True, related_name='components')
 
-    class Meta:
-        unique_together = ('discussion_board', 'component', 'created_by', 'type')
+    # class Meta:
+    #     unique_together = ('discussion_board', 'component', 'created_by', 'type')
 
     def __str__(self):
         return f"{self.discussion_board} - {self.component} (Cantidad: {self.quantity}, Tipo: {self.type}, Usuario: {self.created_by})"
@@ -71,6 +71,7 @@ class Message(models.Model):
     author = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='messages')
     request = models.ForeignKey('discussion_board_requests.DiscussionBoardRequest', on_delete=models.SET_NULL, null=True, blank=True, related_name='messages')
     content = models.TextField()
+    components = models.JSONField(default=list, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
