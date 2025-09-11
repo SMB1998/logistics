@@ -14,6 +14,7 @@ class UsersSerializer(serializers.ModelSerializer):
 
 # Serializador para el modelo Components
 class ComponentsSerializer(serializers.ModelSerializer):
+    proveedor_name = serializers.CharField(source='proveedor.nombre', read_only=True) 
     class Meta:
         model = Components
         fields = '__all__'
@@ -76,10 +77,11 @@ class QueuesSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     author = UsersSerializer(read_only=True)
     replies = serializers.SerializerMethodField()
+    request_status = serializers.CharField(source='request.status', read_only=True)
     
     class Meta:
         model = Message
-        fields = ['id', 'discussion_board', 'author', 'content', 'parent', 'created_at', 'updated_at', 'is_edited', 'replies']
+        fields = ['id', 'discussion_board', 'author', 'content', 'parent', 'created_at', 'updated_at', 'is_edited', 'replies', 'request', 'components', 'request_status']
         read_only_fields = ['created_at', 'updated_at', 'is_edited']
 
     def get_replies(self, obj):
