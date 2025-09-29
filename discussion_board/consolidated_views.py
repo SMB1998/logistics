@@ -41,29 +41,24 @@ class DiscussionBoardUsersConsolidatedView(APIView):
         users_consolidated = defaultdict(lambda: {
             "user_id": None,
             "username": None,
-            "components": []
+            "components": {}
         })
         for comp in components:
             if comp.created_by:
                 uid = comp.created_by.id
                 users_consolidated[uid]["user_id"] = uid
                 users_consolidated[uid]["username"] = comp.created_by.username
-                comp_data = ComponentsSerializer(comp.component).data
-                comp_obj = comp_data.copy()
-                comp_obj["quantity"] = comp.quantity
-                comp_obj["type"] = comp.type
-                comp_obj["component_id"] = comp.component.id
-                comp_obj["component_name"] = comp.component.nombre if hasattr(comp.component, 'nombre') else str(comp.component)
-                # Agregar info de la request
-                if comp.request:
-                    comp_obj["request_id"] = str(comp.request.id)
-                    comp_obj["request_name"] = getattr(comp.request, "__str__", lambda: str(comp.request))()
-                    comp_obj["request_message"] = comp.request.message if hasattr(comp.request, "message") else ""
-                else:
-                    comp_obj["request_id"] = None
-                    comp_obj["request_name"] = None
-                    comp_obj["request_message"] = None
-                users_consolidated[uid]["components"].append(comp_obj)
+                cid = comp.component.id
+                if cid not in users_consolidated[uid]["components"]:
+                    comp_data = ComponentsSerializer(comp.component).data
+                    comp_obj = comp_data.copy()
+                    comp_obj["component_id"] = cid
+                    comp_obj["component_name"] = comp.component.nombre if hasattr(comp.component, 'nombre') else str(comp.component)
+                    comp_obj["quantity"] = 0
+                    users_consolidated[uid]["components"][cid] = comp_obj
+                users_consolidated[uid]["components"][cid]["quantity"] += comp.quantity
+        for user in users_consolidated.values():
+            user["components"] = list(user["components"].values())
         return Response({
             "discussion_board_id": str(board.id),
             "discussion_board_name": board.nombre,

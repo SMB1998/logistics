@@ -140,4 +140,4 @@ class DiscussionBoardSearchView(generics.ListAPIView):
         else:
             queryset = DiscussionBoardDocument.search().query("match_all")
 
-        return self.paginate_queryset(queryset)
+        return queryset

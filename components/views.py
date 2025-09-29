@@ -48,10 +48,9 @@ class ComponentSearchView(generics.ListAPIView):
 
         # Si hay filtros, aplicar la consulta; si no, traer todo con match_all
         if bool_query.must or bool_query.filter:
-            # Aquí se aplica la paginación
             queryset = ComponentsDocument.search().query(bool_query)
         else:
             queryset = ComponentsDocument.search().query("match_all")
 
-        # Aplicar la paginación a los resultados
-        return self.paginate_queryset(queryset)
+    # No ordenar para evitar error de Elasticsearch
+        return queryset
