@@ -1,3 +1,68 @@
-python manage.py sync_elasticsearch
-python manage.py sync_elasticsearch_disc_board
-docker-compose up --build
+# Logistics Project
+
+This project uses Django as the main framework and relies on several tools and services for proper functionality.
+
+## Dependencies
+
+### Main Requirements
+
+- **Docker**: Ensure Docker is installed on your system. You can download it from [Docker](https://www.docker.com/).
+- **Docker Compose**: Required to build and run the services defined in the `docker-compose.yml` file.
+- **Python**: While Docker handles most dependencies, having Python installed is useful for additional tasks.
+
+### Libraries and Services Used
+
+- **Redis**: Used as a broker for Celery and for Django Channels.
+- **Elasticsearch**: Used for data indexing and search functionality.
+- **MySQL**: The main database for the project.
+
+## Initial Setup
+
+1. Clone this repository:
+
+   ```bash
+   git clone <REPOSITORY_URL>
+   cd logistics
+   ```
+
+2. Ensure Docker and Docker Compose are installed.
+
+3. Build and start the containers:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+4. Access on local the project in your browser at `http://localhost:8000`.
+
+## Useful Commands
+
+### Elasticsearch Synchronization
+
+- To synchronize component data with Elasticsearch:
+
+  ```bash
+  python manage.py sync_elasticsearch
+  ```
+
+- To synchronize discussion board data with Elasticsearch:
+  ```bash
+  python manage.py sync_elasticsearch_disc_board
+  ```
+
+### Other Commands
+
+- To apply migrations:
+
+  ```bash
+  python manage.py migrate
+  ```
+
+- To create a superuser:
+  ```bash
+  python manage.py createsuperuser
+  ```
+
+## Additional Notes
+
+- Ensure that Redis, Elasticsearch, and MySQL services are properly configured in the `docker-compose.yml` file.
